@@ -14,6 +14,7 @@ def create_link():
         video_code = url.split(v,1)[1]
         global vc
         vc = video_code
+        print(subtitle_link + video_code)
         return subtitle_link + video_code
     else:
         print("Sorry - I don't seem to recognise that link, please try again.")
@@ -31,16 +32,18 @@ html = requests.get(create_link()).text
 soup = BeautifulSoup(html, "lxml")
 
 print("")
-results = soup.find_all(string=re.compile(create_search_term()))
+results = soup.find_all(string=re.compile(create_search_term(), re.I))
 print("")
 for element in results:
     parent_e = element.parent
     time = parent_e['start']
     sentence = str(parent_e.text).replace('&#39;', '\'')
 
-    time_string = str(time)[:-3]
-    print("Sentence: " + sentence),
-    print("Link: " + yt_url_base + vc + "&t=" + time_string + "s")
+    time_string = str(time)
+    int_time = time_string.split(".",1)[0]
+
+    print("Sentence: " + "\"" + sentence + "\""),
+    print("Link: " + yt_url_base + vc + "&t=" + int_time + "s")
     print("")
 
 
